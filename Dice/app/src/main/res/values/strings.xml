@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_name">Dice!</string>
+    <string name="roll_button_label">Roll</string>
+    <string name="default_result_text">Roll your dice!</string>
+</resources>
