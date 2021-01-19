@@ -61,7 +61,7 @@ class GameFragment : Fragment() {
     lateinit var currentQuestion: Question
     lateinit var answers: MutableList<String>
     private var questionIndex = 0
-    private val numQuestions = Math.min((questions.size + 1) / 2, 3)
+    private val numQuestions = ((questions.size + 1) / 2).coerceAtMost(3)
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
@@ -77,9 +77,9 @@ class GameFragment : Fragment() {
         binding.game = this
 
         // Set the onClickListener for the submitButton
-        binding.submitButton.setOnClickListener @Suppress("UNUSED_ANONYMOUS_PARAMETER")
-        { view: View ->
+        binding.submitButton.setOnClickListener { view: View ->
             val checkedId = binding.questionRadioGroup.checkedRadioButtonId
+            val navController = view.findNavController()
             // Do nothing if nothing is checked (id == -1)
             if (-1 != checkedId) {
                 var answerIndex = 0
@@ -99,11 +99,13 @@ class GameFragment : Fragment() {
                         binding.invalidateAll()
                     } else {
                         // We've won!  Navigate to the gameWonFragment.
-                        view.findNavController().navigate(R.id.action_gameFragment_to_gameWonFragment)
+                        navController.navigate(
+                                GameFragmentDirections.actionGameFragmentToGameWonFragment(numQuestions, questionIndex)
+                        )
                     }
                 } else {
                     // Game over! A wrong answer sends us to the gameOverFragment.
-                    view.findNavController().navigate(R.id.action_gameFragment_to_gameOverFragment)
+                    navController.navigate(GameFragmentDirections.actionGameFragmentToGameOverFragment())
                 }
             }
         }

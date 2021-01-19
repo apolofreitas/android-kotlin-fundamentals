@@ -38,7 +38,7 @@
     <fragment
         android:id="@+id/gameWonFragment"
         android:name="com.apolofreitas.androidtrivia.GameWonFragment"
-        android:label="@string/try_again"
+        android:label="@string/congratulations"
         tools:layout="@layout/fragment_game_won" >
 
         <action
@@ -46,6 +46,12 @@
             app:destination="@id/gameFragment"
             app:popUpTo="@id/titleFragment"
             app:popUpToInclusive="false" />
+        <argument
+            android:name="numTotalQuestions "
+            app:argType="integer" />
+        <argument
+            android:name="numCorrectQuestions"
+            app:argType="integer" />
     </fragment>
 
     <fragment

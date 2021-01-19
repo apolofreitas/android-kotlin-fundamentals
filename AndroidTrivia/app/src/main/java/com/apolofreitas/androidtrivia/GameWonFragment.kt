@@ -16,10 +16,10 @@
 
 package com.apolofreitas.androidtrivia
 
+import android.content.Intent
 import android.os.Bundle
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
+import android.view.*
+import android.widget.Toast
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.navigation.findNavController
@@ -38,9 +38,51 @@ class GameWonFragment : Fragment() {
         )
 
         binding.nextMatchButton.setOnClickListener { view: View ->
-            view.findNavController().navigate(R.id.action_gameWonFragment_to_gameFragment)
+            view.findNavController()
+                    .navigate(GameWonFragmentDirections.actionGameWonFragmentToGameFragment())
         }
 
+        setHasOptionsMenu(true)
+
+
+        val args = GameWonFragmentArgs.fromBundle(requireArguments())
+        val msg = "NumCorrect: ${args.numCorrectQuestions}, NumQuestions: ${args.numTotalQuestions}"
+        Toast.makeText(context, msg, Toast.LENGTH_LONG).show()
+
         return binding.root
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        super.onCreateOptionsMenu(menu, inflater)
+        inflater.inflate(R.menu.winner_menu, menu)
+        if(getShareIntent().resolveActivity(requireActivity().packageManager)==null){
+            menu.findItem(R.id.share).isVisible = false
+        }
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        when(item.itemId){
+            R.id.share -> shareSuccess()
+        }
+        return super.onOptionsItemSelected(item)
+    }
+
+    private fun shareSuccess() {
+        startActivity(getShareIntent())
+    }
+
+    private fun getShareIntent(): Intent {
+        val args = GameWonFragmentArgs.fromBundle(requireArguments())
+        val shareIntent = Intent(Intent.ACTION_SEND)
+        shareIntent.setType("text/plain")
+                .putExtra(
+                        Intent.EXTRA_TEXT,
+                        getString(
+                                R.string.share_success_text,
+                                args.numCorrectQuestions,
+                                args.numTotalQuestions
+                        )
+                )
+        return shareIntent
     }
 }
