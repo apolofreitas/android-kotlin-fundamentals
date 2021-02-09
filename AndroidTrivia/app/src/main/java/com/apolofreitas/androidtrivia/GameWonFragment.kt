@@ -44,7 +44,6 @@ class GameWonFragment : Fragment() {
 
         setHasOptionsMenu(true)
 
-
         val args = GameWonFragmentArgs.fromBundle(requireArguments())
         val msg = "NumCorrect: ${args.numCorrectQuestions}, NumQuestions: ${args.numTotalQuestions}"
         Toast.makeText(context, msg, Toast.LENGTH_LONG).show()
