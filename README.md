@@ -27,7 +27,7 @@
 
 ### Lesson 5: Architecture components
 - [x] 5.1 ViewModel and ViewModelProvider
-- [ ] 5.2 LiveData and LiveData observers
+- [x] 5.2 LiveData and LiveData observers
 - [ ] 5.3 DataBinding with ViewModel and LiveData
 - [ ] 5.4 LiveData transformations
 
