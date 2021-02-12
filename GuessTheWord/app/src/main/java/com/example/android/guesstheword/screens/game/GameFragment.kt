@@ -51,32 +51,21 @@ class GameFragment : Fragment() {
         // Get the viewModel
         viewModel = ViewModelProvider(this).get(GameViewModel::class.java)
 
-        binding.correctButton.setOnClickListener { onCorrect() }
-        binding.skipButton.setOnClickListener { onSkip() }
-        binding.endGameButton.setOnClickListener { onEndGame() }
+        binding.correctButton.setOnClickListener { viewModel.onCorrect() }
+        binding.skipButton.setOnClickListener { viewModel.onSkip() }
+        binding.endGameButton.setOnClickListener { gameFinished() }
 
-        updateScoreText()
-        updateWordText()
+        viewModel.score.observe(viewLifecycleOwner) { newScore ->
+            binding.scoreText.text = newScore.toString()
+        }
+        viewModel.word.observe(viewLifecycleOwner) { newWord ->
+            binding.wordText.text = newWord
+        }
+        viewModel.eventGameFinish.observe(viewLifecycleOwner) { hasFinished ->
+            if (hasFinished) gameFinished()
+        }
 
         return binding.root
-    }
-
-    /** Methods for buttons presses **/
-
-    private fun onSkip() {
-        viewModel.onSkip()
-        updateWordText()
-        updateScoreText()
-    }
-
-    private fun onCorrect() {
-        viewModel.onCorrect()
-        updateScoreText()
-        updateWordText()
-    }
-
-    private fun onEndGame() {
-        gameFinished()
     }
 
     /**
@@ -85,18 +74,8 @@ class GameFragment : Fragment() {
     private fun gameFinished() {
         Toast.makeText(activity, "Game has just finished", Toast.LENGTH_SHORT).show()
         val action = GameFragmentDirections.actionGameToScore()
-        action.score = viewModel.score
+        action.score = viewModel.score.value ?: 0
         NavHostFragment.findNavController(this).navigate(action)
-    }
-
-    /** Methods for updating the UI **/
-
-    private fun updateWordText() {
-        binding.wordText.text = viewModel.word
-
-    }
-
-    private fun updateScoreText() {
-        binding.scoreText.text = viewModel.score.toString()
+        viewModel.onGameFinishComplete()
     }
 }
